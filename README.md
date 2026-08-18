@@ -3,9 +3,10 @@
 A bar widget for Omarchy that shows what [cliamp](https://cliamp.stream) is
 playing, with playback controls.
 
-![Bar widget](screenshots/cliamp-plugin-1.png)
-
-![Popup panel](screenshots/cliamp-plugin-2.png)
+<p align="center">
+  <img src="screenshots/cliamp-plugin-1.png" width="49%" alt="Bar widget" />
+  <img src="screenshots/cliamp-plugin-2.png" width="49%" alt="Popup panel" />
+</p>
 
 ## Features
 
