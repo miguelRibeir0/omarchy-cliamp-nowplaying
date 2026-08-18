@@ -324,6 +324,78 @@ BarWidget {
     ? root.title + (root.artist ? " — " + root.artist : "") + (root.album ? " (" + root.album + ")" : "")
     : "cliamp is not running"
 
+  // --- cliamp companion plugin provisioning ---------------------------------
+  // "Up next" reads the queue through a tiny read-only cliamp Lua plugin.
+  // Ship it inside this repo and self-provision on first load so installs
+  // from the plugin website work with zero manual setup.
+
+  Component.onCompleted: root.provisionCliampPlugin()
+
+  property bool cliampPluginProvisioned: false
+  property bool cliampPluginInstalled: false
+
+  readonly property string cliampPluginPath: {
+    var url = Qt.resolvedUrl("cliamp/next-track.lua")
+    var s = String(url)
+    if (s.indexOf("file://") === 0) s = s.slice(7)
+    return s
+  }
+
+  function provisionCliampPlugin() {
+    if (root.cliampPluginProvisioned) return
+    root.cliampPluginProvisioned = true
+    pluginCheckProc.command = ["sh", "-c",
+      "if ! command -v cliamp >/dev/null 2>&1; then echo noclamp;" +
+      "elif test -f \"$HOME/.config/cliamp/plugins/next-track.lua\"; then echo present;" +
+      "else echo missing; fi"]
+    pluginCheckProc.running = true
+  }
+
+  function notifyCliampRestart() {
+    if (!root.bar || !root.bar.shell) return
+    root.bar.shell.summon("omarchy.osd", JSON.stringify({
+      icon: "media",
+      message: "cliamp now-playing: 'Up next' ready — restart cliamp to activate it"
+    }))
+  }
+
+  Process {
+    id: pluginCheckProc
+    command: ["sh", "-c", "true"]
+    stdout: StdioCollector {
+      waitForEnd: true
+      onStreamFinished: {
+        var out = String(text || "")
+        if (out.indexOf("missing") === -1) return
+        pluginInstallProc.command = ["sh", "-c",
+          "mkdir -p \"$HOME/.config/cliamp/plugins\" && cp '" + root.cliampPluginPath + "' \"$HOME/.config/cliamp/plugins/next-track.lua\""]
+        pluginInstallProc.running = true
+      }
+    }
+  }
+
+  Process {
+    id: pluginInstallProc
+    command: ["sh", "-c", "true"]
+    onRunningChanged: {
+      if (!running) {
+        root.cliampPluginInstalled = true
+        pluginTrustProc.running = true
+      }
+    }
+  }
+
+  Process {
+    id: pluginTrustProc
+    command: ["cliamp", "plugins", "trust", "next-track", "--yes"]
+    onRunningChanged: {
+      if (!running && root.cliampPluginInstalled) {
+        root.cliampPluginInstalled = false
+        root.notifyCliampRestart()
+      }
+    }
+  }
+
   Loader {
     id: panelLoader
     active: true
