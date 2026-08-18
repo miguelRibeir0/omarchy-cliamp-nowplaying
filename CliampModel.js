@@ -71,6 +71,25 @@ function hasTrack(data) {
   return !!trackOf(data) && trackTitle(data) !== ""
 }
 
+function parseNext(raw) {
+  if (!raw) return null
+  try {
+    var start = String(raw).indexOf("{")
+    if (start < 0) return null
+    var data = JSON.parse(String(raw).slice(start))
+    if (!data || data.shuffle === true) return null
+    var t = data.track
+    if (!t) return null
+    return {
+      title: String(t.title || ""),
+      artist: String(t.artist || ""),
+      album: String(t.album || "")
+    }
+  } catch (e) {
+    return null
+  }
+}
+
 function formatDuration(secs) {
   var total = Math.max(0, Math.round(secs || 0))
   var minutes = Math.floor(total / 60)
@@ -95,6 +114,7 @@ if (typeof module !== "undefined") {
     isPlaying: isPlaying,
     isPaused: isPaused,
     hasTrack: hasTrack,
+    parseNext: parseNext,
     formatDuration: formatDuration
   }
 }

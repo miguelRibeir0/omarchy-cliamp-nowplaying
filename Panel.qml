@@ -133,7 +133,8 @@ Panel {
   
             Row {
               width: parent.width
-  
+              spacing: Style.space(6)
+
               Text {
                 id: elapsedText
                 text: Model.formatDuration(root.w.position)
@@ -141,9 +142,18 @@ Panel {
                 font.family: root.bar ? root.bar.fontFamily : Style.font.family
                 font.pixelSize: Style.font.caption
               }
-  
-              Item { width: parent.width - elapsedText.implicitWidth - durationText.implicitWidth - parent.spacing }
-  
+
+              Rectangle {
+                id: dividerRect
+                width: Math.max(1, Math.round(Style.space(1)))
+                height: Style.space(9)
+                anchors.verticalCenter: parent.verticalCenter
+                color: Qt.darker(root.barForeground, 1.7)
+                radius: width / 2
+              }
+
+              Item { width: parent.width - elapsedText.implicitWidth - durationText.implicitWidth - dividerRect.implicitWidth - parent.spacing * 3 }
+
               Text {
                 id: durationText
                 text: Model.formatDuration(root.w.duration)
@@ -244,14 +254,46 @@ Panel {
               visible: root.w && root.w.repeatMode !== "Off"
             }
   
-            Text {
-              text: root.w.speed.toFixed(2) + "×"
-              color: Qt.darker(root.barForeground, 1.6)
-              font.family: root.bar ? root.bar.fontFamily : Style.font.family
-              font.pixelSize: Style.font.caption
-              visible: root.w && root.w.speed !== 1
-            }
+          Text {
+            text: root.w.speed.toFixed(2) + "×"
+            color: Qt.darker(root.barForeground, 1.6)
+            font.family: root.bar ? root.bar.fontFamily : Style.font.family
+            font.pixelSize: Style.font.caption
+            visible: root.w && root.w.speed !== 1
           }
+        }
+
+            // --- up next ------------------------------------------------------
+
+            PanelSeparator {
+              visible: root.w && root.w.hasNext
+              foreground: root.barForeground
+            }
+
+            Row {
+              width: parent.width
+              spacing: Style.space(8)
+              visible: root.w && root.w.hasNext
+
+              Text {
+                id: upNextLabel
+                text: "Up next:"
+                color: Qt.darker(root.barForeground, 1.6)
+                font.family: root.bar ? root.bar.fontFamily : Style.font.family
+                font.pixelSize: Style.font.caption
+                font.bold: true
+                anchors.verticalCenter: parent.verticalCenter
+              }
+
+              Text {
+                width: parent.width - parent.spacing - upNextLabel.implicitWidth
+                text: root.w.nextTitle + (root.w.nextArtist ? " — " + root.w.nextArtist : "")
+                color: Qt.darker(root.barForeground, 1.2)
+                font.family: root.bar ? root.bar.fontFamily : Style.font.family
+                font.pixelSize: Style.font.bodySmall
+                elide: Text.ElideRight
+              }
+            }
           }
         }
       }
