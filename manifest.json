@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "miguel.cliamp-nowplaying",
+  "name": "Cliamp Now Playing",
+  "version": "1.0.0",
+  "author": "Miguel",
+  "license": "MIT",
+  "description": "Now playing widget for cliamp with playback controls.",
+  "kinds": ["bar-widget"],
+  "entryPoints": { "barWidget": "BarWidget.qml" },
+  "barWidget": {
+    "displayName": "Cliamp Now Playing",
+    "description": "cliamp track info with playback controls",
+    "category": "Media",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}
