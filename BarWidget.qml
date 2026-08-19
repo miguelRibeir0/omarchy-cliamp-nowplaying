@@ -273,7 +273,7 @@ BarWidget {
       bar: root.bar
       width: Math.max(8, root.maxLabelWidth)
       height: barSize
-      text: root.label || " "
+      text: " "
       labelVisible: false
       tooltipText: root.tooltipText
       onPressed: function(buttonCode) {
@@ -295,6 +295,7 @@ BarWidget {
         Text {
           id: labelText
           text: root.label
+          textFormat: Text.PlainText
           color: root.bar.barForeground
           font.family: root.bar.fontFamily
           font.pixelSize: Style.font.body

@@ -1,3 +1,9 @@
+function sanitize(s) {
+  return String(s || "")
+    .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "")
+    .replace(/[<>]/g, "")
+}
+
 function parseStatus(raw) {
   if (!raw) return null
   try {
@@ -14,15 +20,15 @@ function trackOf(data) {
 }
 
 function trackTitle(data) {
-  return String(trackOf(data).title || "")
+  return sanitize(trackOf(data).title)
 }
 
 function trackArtist(data) {
-  return String(trackOf(data).artist || "")
+  return sanitize(trackOf(data).artist)
 }
 
 function trackAlbum(data) {
-  return String(trackOf(data).album || "")
+  return sanitize(trackOf(data).album)
 }
 
 function isStream(data) {
@@ -81,9 +87,9 @@ function parseNext(raw) {
     var t = data.track
     if (!t) return null
     return {
-      title: String(t.title || ""),
-      artist: String(t.artist || ""),
-      album: String(t.album || "")
+      title: sanitize(t.title),
+      artist: sanitize(t.artist),
+      album: sanitize(t.album)
     }
   } catch (e) {
     return null
@@ -115,6 +121,7 @@ if (typeof module !== "undefined") {
     isPaused: isPaused,
     hasTrack: hasTrack,
     parseNext: parseNext,
+    sanitize: sanitize,
     formatDuration: formatDuration
   }
 }

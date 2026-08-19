@@ -75,6 +75,7 @@ Panel {
               Text {
             width: parent.width
             text: root.w.title || "Nothing playing"
+            textFormat: Text.PlainText
             color: root.barForeground
             font.family: root.bar ? root.bar.fontFamily : Style.font.family
             font.pixelSize: Style.font.subtitle
@@ -86,6 +87,7 @@ Panel {
           Text {
             width: parent.width
             text: root.w.artist
+            textFormat: Text.PlainText
             color: Qt.darker(root.barForeground, 1.3)
             font.family: root.bar ? root.bar.fontFamily : Style.font.family
             font.pixelSize: Style.font.bodySmall
@@ -97,6 +99,7 @@ Panel {
           Text {
             width: parent.width
             text: root.w.album + (root.w.isStream ? (root.w.album ? "  ·  Stream" : "Stream") : "")
+            textFormat: Text.PlainText
             color: Qt.darker(root.barForeground, 1.6)
             font.family: root.bar ? root.bar.fontFamily : Style.font.family
             font.pixelSize: Style.font.caption
@@ -288,6 +291,7 @@ Panel {
               Text {
                 width: parent.width - parent.spacing - upNextLabel.implicitWidth
                 text: root.w.nextTitle + (root.w.nextArtist ? " — " + root.w.nextArtist : "")
+                textFormat: Text.PlainText
                 color: Qt.darker(root.barForeground, 1.2)
                 font.family: root.bar ? root.bar.fontFamily : Style.font.family
                 font.pixelSize: Style.font.bodySmall
